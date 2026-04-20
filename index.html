@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Growth AI Tools | Neo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="cargarSesion()">
+    <div class="container">
+        <header>
+            <h1>Nuestros servicios AI</h1>
+            <p>Diagnóstico avanzado, OCR, A/B Testing y Generador de Copys.</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('analizador')">Modo 1: Analizador UI/UX</button>
+            <button class="tab-btn" onclick="switchTab('generador')">Modo 2: Generador Copys</button>
+        </div>
+
+        <div id="analizador" class="tab-content active">
+            <div class="selectors">
+                <label>Dispositivo:</label>
+                <select id="select-dispositivo"><option>Móvil</option><option>Desktop</option></select>
+                <label>Simulador de Visión:</label>
+                <select id="select-vision" onchange="aplicarFiltroVisual()">
+                    <option value="normal">Normal</option>
+                    <option value="vision-daltonismo">Daltonismo (Acromatopsia)</option>
+                    <option value="vision-glare">Fatiga Visual / Mucho Sol</option>
+                </select>
+            </div>
+            
+            <div class="upload-grid">
+                <div class="upload-zone" onclick="document.getElementById('input-ad-1').click()">
+                    <p id="text-ad-1">📸 Sube tu AD</p>
+                    <img id="thumb-ad-1" class="thumb-preview">
+                    <input type="file" id="input-ad-1" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-1', 'text-ad-1')">
+                </div>
+                <div class="upload-zone" onclick="document.getElementById('input-landing').click()">
+                    <p id="text-landing">🖥️ Sube tu Landing Page</p>
+                    <img id="thumb-landing" class="thumb-preview">
+                    <input type="file" id="input-landing" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-landing', 'text-landing')">
+                </div>
+            </div>
+            
+            <div id="progress-container" style="display:none; margin-bottom: 20px;">
+                <span id="progress-text" style="color: #4a72ff; display:block; margin-bottom:5px;">Iniciando...</span>
+                <div style="width: 100%; background: #1e293b; border-radius: 10px; height: 10px;">
+                    <div id="progress-bar" style="width: 0%; background: #4a72ff; height: 100%; border-radius: 10px; transition: 0.5s;"></div>
+                </div>
+            </div>
+
+            <button class="action-btn" id="btn-analizar" onclick="analizar()">Analizar Coherencia Completa</button>
+
+            <div id="resultados-analisis" style="display: none; margin-top: 30px;">
+                <div class="score-circle" id="termometro-score">0</div>
+                <p style="text-align:center; color: #94a3b8;">Match Score Total</p>
+
+                <div class="md-box"><h3>🎭 Emoción y Tono</h3><p id="res-emocion"></p></div>
+                <div class="md-box"><h3>🔍 Fallos OCR (Palabras Prometidas no encontradas)</h3><ul id="res-ocr"></ul></div>
+                <div class="md-box"><h3>🧪 Hipótesis A/B Testing sugerida</h3><p id="res-ab"></p></div>
+
+                <h3 style="margin-top:30px; font-family: 'Playfair Display', serif; color:white;">Matriz de Prioridad (Prioritizer)</h3>
+                <div class="priority-matrix">
+                    <div class="matrix-quadrant" id="q1"><h4>🚀 Quick Wins</h4></div>
+                    <div class="matrix-quadrant" id="q2"><h4>🏗️ Proyectos</h4></div>
+                    <div class="matrix-quadrant" id="q3"><h4>🧹 Tareas Menores</h4></div>
+                    <div class="matrix-quadrant" id="q4"><h4>🧊 Ignorar por ahora</h4></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="generador" class="tab-content">
+            <div class="selectors">
+                <label>Plataforma:</label><select id="select-plataforma"><option>Meta</option><option>Google Ads</option></select>
+                <label>Tono:</label><select id="select-tono"><option>Urgencia</option><option>Educativo</option></select>
+            </div>
+            <div class="upload-grid">
+                <div class="upload-zone" onclick="document.getElementById('input-ad-2').click()">
+                    <p id="text-ad-2">🎨 Sube el Arte</p>
+                    <img id="thumb-ad-2" class="thumb-preview">
+                    <input type="file" id="input-ad-2" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-2', 'text-ad-2')">
+                </div>
+            </div>
+            <button class="action-btn" id="btn-generar" onclick="generar()">Generar Copys</button>
+            <div id="resultados-copys" class="md-box" style="display: none; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 2. Miniaturas (Thumbnails)
+        function mostrarMiniatura(input, imgId, textId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById(textId).style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 3. Simulador de Visión
+        function aplicarFiltroVisual() {
+            const filtro = document.getElementById('select-vision').value;
+            const imagenes = document.querySelectorAll('.thumb-preview');
+            imagenes.forEach(img => {
+                img.className = 'thumb-preview'; // reset
+                if (filtro !== 'normal') img.classList.add(filtro);
+            });
+        }
+
+        // 4. Analizador Completo (Modo 1)
+        async function analizar() {
+            const ad = document.getElementById('input-ad-1').files[0];
+            const lp = document.getElementById('input-landing').files[0];
+            if (!ad || !lp) return alert("Sube ambas imágenes.");
+
+            const btn = document.getElementById('btn-analizar');
+            btn.disabled = true;
+
+            // Barra de Progreso
+            document.getElementById('progress-container').style.display = 'block';
+            let p = 0; 
+            const interval = setInterval(() => { p+=10; if(p<=90) { document.getElementById('progress-bar').style.width = p+'%'; document.getElementById('progress-text').innerText = 'Analizando Pixeles y Texto ('+p+'%)...'; } }, 500);
+
+            const formData = new FormData();
+            formData.append('ad_image', ad);
+            formData.append('landing_image', lp);
+            formData.append('dispositivo', document.getElementById('select-dispositivo').value);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/analizar', { method: 'POST', body: formData });
+                const data = await response.json();
+                clearInterval(interval);
+                document.getElementById('progress-bar').style.width = '100%';
+                document.getElementById('progress-text').innerText = '¡Listo!';
+                
+                // Guardar en Historial (LocalStorage)
+                localStorage.setItem('neo_last_analysis', JSON.stringify(data.resultado));
+                pintarResultadosAnalisis(data.resultado);
+                
+            } catch (e) {
+                clearInterval(interval);
+                alert("Error de conexión. Revisa app.py");
+            }
+            btn.disabled = false;
+        }
+
+        // 5. Pintar la UI con los datos
+        function pintarResultadosAnalisis(data) {
+            document.getElementById('resultados-analisis').style.display = 'block';
+
+            // Termómetro Visual
+            const term = document.getElementById('termometro-score');
+            term.innerText = data.score;
+            let color = data.score >= 80 ? '#27ae60' : (data.score >= 50 ? '#f2c94c' : '#eb5757');
+            term.style.borderColor = color;
+            term.style.color = color;
+
+            document.getElementById('res-emocion').innerText = data.emocion;
+            document.getElementById('res-ab').innerText = data.hipotesis_ab;
+
+            // OCR
+            const ocrList = document.getElementById('res-ocr');
+            ocrList.innerHTML = '';
+            if(data.ocr_mismatch.length === 0) ocrList.innerHTML = "<li>✅ Todo coincide.</li>";
+            data.ocr_mismatch.forEach(palabra => { ocrList.innerHTML += `<li>❌ ${palabra}</li>`; });
+
+            // Matriz (Limpiar primero)
+            ['q1','q2','q3','q4'].forEach(q => document.getElementById(q).innerHTML = document.getElementById(q).firstElementChild.outerHTML);
+            data.matriz.forEach(item => {
+                if(document.getElementById(item.cuadrante)) {
+                    document.getElementById(item.cuadrante).innerHTML += `<div class="action-item">${item.accion}</div>`;
+                }
+            });
+        }
+
+        // 6. Generador (Modo 2) + Traductor Markdown
+        async function generar() {
+            const ad = document.getElementById('input-ad-2').files[0];
+            if (!ad) return alert("Sube el Ad.");
+            document.getElementById('btn-generar').innerText = "Generando...";
+
+            const f = new FormData();
+            f.append('ad_image', ad);
+            f.append('plataforma', document.getElementById('select-plataforma').value);
+            f.append('tono', document.getElementById('select-tono').value);
+
+            const res = await fetch('http://127.0.0.1:5000/generar', { method: 'POST', body: f });
+            const data = await res.json();
+            
+            // Traductor Markdown simple (Asteriscos a Negrita)
+            let texto = data.resultado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            texto = texto.replace(/\n/g, '<br>');
+            
+            const caja = document.getElementById('resultados-copys');
+            caja.innerHTML = `<h3>Resultados:</h3><p>${texto}</p>`;
+            caja.style.display = 'block';
+            document.getElementById('btn-generar').innerText = "Generar Copys";
+        }
+
+        // 7. Cargar Historial al abrir
+        function cargarSesion() {
+            const saved = localStorage.getItem('neo_last_analysis');
+            if (saved) { pintarResultadosAnalisis(JSON.parse(saved)); }
+        }
+    </script>
+</body>
+</html>
