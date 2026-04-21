@@ -1,6 +1,6 @@
 import os
-from dotenv import load_dotenv # Nueva librería
-from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import google.generativeai as genai
 from PIL import Image
@@ -12,16 +12,27 @@ load_dotenv() # Carga las variables del archivo .env
 app = Flask(__name__)
 CORS(app)
 
-# Ahora la llave se lee de forma segura
+# 1. CONFIGURACIÓN SEGURA DE LA LLAVE
 API_KEY = os.getenv("GOOGLE_API_KEY") 
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash')
 
-# 1. CONFIGURA TU LLAVE AQUÍ
-API_KEY = "AIzaSyC2C9cYX9qXSI1KtOO1PZOL4UwHWgfoevs" 
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-2.5-flash')
+# ==========================================
+# RUTAS DEL FRONTEND (LA CARA)
+# ==========================================
+@app.route('/')
+def home():
+    # Cuando alguien entre al link, le mostramos el HTML
+    return send_file('index.html')
 
+@app.route('/style.css')
+def style():
+    # Entregamos los colores y diseño
+    return send_file('style.css')
+
+# ==========================================
+# RUTAS DEL BACKEND (EL CEREBRO)
+# ==========================================
 @app.route('/analizar', methods=['POST'])
 def analizar_coherencia():
     try:
@@ -80,6 +91,6 @@ def generar_copys():
         return jsonify({"status": "error", "mensaje": str(e)})
 
 if __name__ == '__main__':
-    # Google Cloud asigna el puerto automáticamente
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    # Cloud Run requiere el puerto 8080
+    port = int(os.environ.get("PORT", 8080))
+    app.run(debug=False, host='0.0.0.0', port=port)
