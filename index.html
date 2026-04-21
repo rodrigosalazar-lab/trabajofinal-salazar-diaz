@@ -139,7 +139,8 @@
             formData.append('dispositivo', document.getElementById('select-dispositivo').value);
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/analizar', { method: 'POST', body: formData });
+                // AQUÍ ESTÁ EL CAMBIO: Ruta relativa
+                const response = await fetch('/analizar', { method: 'POST', body: formData });
                 const data = await response.json();
                 clearInterval(interval);
                 document.getElementById('progress-bar').style.width = '100%';
@@ -196,17 +197,23 @@
             f.append('plataforma', document.getElementById('select-plataforma').value);
             f.append('tono', document.getElementById('select-tono').value);
 
-            const res = await fetch('http://127.0.0.1:5000/generar', { method: 'POST', body: f });
-            const data = await res.json();
-            
-            // Traductor Markdown simple (Asteriscos a Negrita)
-            let texto = data.resultado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            texto = texto.replace(/\n/g, '<br>');
-            
-            const caja = document.getElementById('resultados-copys');
-            caja.innerHTML = `<h3>Resultados:</h3><p>${texto}</p>`;
-            caja.style.display = 'block';
-            document.getElementById('btn-generar').innerText = "Generar Copys";
+            try {
+                // AQUÍ ESTÁ EL CAMBIO: Ruta relativa
+                const res = await fetch('/generar', { method: 'POST', body: f });
+                const data = await res.json();
+                
+                // Traductor Markdown simple (Asteriscos a Negrita)
+                let texto = data.resultado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                texto = texto.replace(/\n/g, '<br>');
+                
+                const caja = document.getElementById('resultados-copys');
+                caja.innerHTML = `<h3>Resultados:</h3><p>${texto}</p>`;
+                caja.style.display = 'block';
+            } catch (error) {
+                alert("Error de conexión al generar copys.");
+            } finally {
+                document.getElementById('btn-generar').innerText = "Generar Copys";
+            }
         }
 
         // 7. Cargar Historial al abrir
