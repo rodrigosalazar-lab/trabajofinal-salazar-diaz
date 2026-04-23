@@ -3,43 +3,24 @@
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 body { background: linear-gradient(135deg, #050b14 0%, #0a1931 100%); color: #e2e8f0; margin: 0; padding: 0; min-height: 100vh; }
 
-/* =========================================================
-   PANTALLA 1: DASHBOARD (BLANCO CON ANIMACIÓN)
-   ========================================================= */
 #pantalla-clientes { 
     display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
     background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff, #f1f5f9);
-    background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
+    background-size: 400% 400%; animation: gradientBG 10s ease infinite;
 }
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.login-box { 
-    background: #ffffff; padding: 50px 40px; border-radius: 20px; width: 100%; max-width: 450px; 
-    text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; 
-}
+.login-box { background: #ffffff; padding: 50px 40px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
 .login-logo { max-width: 160px; margin-bottom: 20px; }
 .login-box h2 { color: #0f172a; font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-top: 0; }
 .login-subtitle { color: #64748b; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 .login-divider { color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0; }
-
-.login-box select, .login-box input { 
-    width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; 
-    border: 1px solid #cbd5e1; background: #f8fafc; color: #1e293b; font-size: 1rem; outline: none; transition: 0.3s;
-}
+.login-box select, .login-box input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; background: #f8fafc; color: #1e293b; font-size: 1rem; outline: none; transition: 0.3s;}
 .login-box select:focus, .login-box input:focus { border-color: #4a72ff; box-shadow: 0 0 0 3px rgba(74, 114, 255, 0.2); }
 
-/* =========================================================
-   PANTALLA 2: LA APLICACIÓN
-   ========================================================= */
 #pantalla-app { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
 .container { background-color: #121b2d; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; }
 
-/* Cabecera Blanca App */
 header { background-color: #ffffff; padding: 30px 20px; text-align: center; border-bottom: 4px solid #4a72ff; }
 .logo-neo { max-width: 180px; margin-bottom: 10px; }
 header h1 { font-family: 'Playfair Display', serif; color: #0f172a; font-size: 2.2rem; margin: 0 0 10px 0; }
@@ -47,18 +28,14 @@ header p { color: #475569; font-size: 1.1rem; margin: 0; }
 .cliente-activo-badge { display: inline-block; background: #f1f5f9; color: #334155; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; margin-top: 15px; border: 1px solid #cbd5e1; }
 
 .app-body { padding: 30px; }
-
-/* Instrucciones y Explicaciones (Restauradas) */
 .instrucciones-box { background: rgba(74, 114, 255, 0.1); border-left: 4px solid #4a72ff; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; }
 .instrucciones-box h3 { margin-top: 0; color: #4a72ff; font-size: 1.1rem; margin-bottom: 10px; }
 .instrucciones-box p { margin: 0 0 10px 0; font-size: 0.95rem; line-height: 1.5; color: #cbd5e1; }
 .instrucciones-box ol { margin: 0; padding-left: 20px; color: #e2e8f0; font-size: 0.95rem; }
 .instrucciones-box li { margin-bottom: 5px; }
-
 .score-explicacion { font-size: 0.85rem; color: #94a3b8; text-align: center; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; line-height: 1.5; border: 1px solid #1e293b; }
 
-/* Tabs y Controles */
-.tabs { display: flex; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; flex-wrap: wrap; }
+.tabs { display: flex; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; flex-wrap: wrap; justify-content: center;}
 .tab-btn { padding: 10px 20px; background: #1e293b; border: none; color: #94a3b8; cursor: pointer; border-radius: 30px; transition: 0.3s; font-weight: 500;}
 .tab-btn.active { background: #4a72ff; color: #fff; }
 .tab-content { display: none; animation: fadeIn 0.5s; }
@@ -66,19 +43,18 @@ header p { color: #475569; font-size: 1.1rem; margin: 0; }
 
 .selectors { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; flex-wrap: wrap; background: #1e293b; padding: 15px; border-radius: 8px;}
 .selectors select, .selectors input { padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; outline: none; }
+.input-grande { flex: 1; min-width: 250px; }
 
 .action-btn { width: 100%; padding: 16px; background: #4a72ff; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; color: #fff; margin-top: 10px;}
 .action-btn:hover { background: #3b5bdb; }
 .btn-secundario { background: #10b981; margin-top: 15px;}
 .btn-secundario:hover { background: #059669; }
 
-/* Zonas de subida */
 .upload-grid { display: flex; gap: 20px; margin-bottom: 20px; }
 .upload-zone { flex: 1; border: 2px dashed #334155; border-radius: 12px; text-align: center; padding: 20px; background: rgba(15,23,42,0.5); cursor: pointer; transition: 0.3s; }
 .upload-zone:hover { border-color: #4a72ff; background: rgba(74, 114, 255, 0.05); }
 .thumb-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; }
 
-/* Resultados Modo 1 */
 .score-container { display: flex; align-items: center; justify-content: space-around; background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 20px;}
 .score-circle { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; border: 5px solid #334155; margin: 0 auto; transition: border-color 0.5s, color 0.5s;}
 .sub-metricas { flex: 1; min-width: 250px; }
@@ -95,35 +71,11 @@ header p { color: #475569; font-size: 1.1rem; margin: 0; }
 .matrix-quadrant h4 { margin: 0 0 10px 0; color: #4a72ff; border-bottom: 1px solid #1e293b; padding-bottom: 5px;}
 .action-item { background: #1e293b; padding: 8px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid #4a72ff; font-size: 0.9rem;}
 
-/* Tablas */
 table { width: 100%; border-collapse: collapse; margin-top: 15px; color: #fff; background: #1e293b; border-radius: 8px; overflow: hidden; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; vertical-align: top; }
 th { background: #0f172a; color: #4a72ff; }
 
-/* Historial UI */
 .history-card { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #10b981; }
 .history-date { font-size: 0.8rem; color: #94a3b8; }
 
-/* =========================================================
-   REPORTE PDF (Fondo Blanco - Forzado)
-   ========================================================= */
-#pdf-report-container {
-    display: none; /* Oculto por defecto */
-}
-#pdf-report-container.generando {
-    display: block;
-    position: absolute; /* Lo saca del flujo visual */
-    left: -9999px; /* Lo esconde fuera de la pantalla */
-    top: -9999px;
-}
-#pdf-report { 
-    background: #ffffff; color: #000000; padding: 40px; width: 800px; font-family: 'Inter', sans-serif; 
-}
-#pdf-report .pdf-header { text-align: center; border-bottom: 2px solid #4a72ff; padding-bottom: 20px; margin-bottom: 20px; }
-#pdf-report .pdf-header img { max-width: 150px; }
-#pdf-report .pdf-header h2 { font-family: 'Playfair Display', serif; color: #0f172a; margin-bottom: 5px;}
-#pdf-report .pdf-score-box { border: 1px solid #cbd5e1; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; background: #f8fafc; border-radius: 8px; margin-bottom: 20px; color: #0f172a;}
-#pdf-report .pdf-section { margin-bottom: 20px; }
-#pdf-report .pdf-section h3 { color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
