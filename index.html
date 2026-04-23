@@ -2,169 +2,250 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ad Landing Analyzer | Neo Consulting</title>
+    <title>Growth AI Tools | Neo</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body onload="cargarSesion()">
-    <div class="container">
-        <header>
-            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Consulting" class="logo-neo">
-            <h1>Ad Landing Analyzer + Content Creator</h1>
-            <p>Audita la fricción de tus embudos publicitarios y genera copys de alto rendimiento con IA.</p>
-        </header>
+<body>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('analizador')">🔍 Modo 1: Analizador UI/UX</button>
-            <button class="tab-btn" onclick="switchTab('generador')">✍️ Modo 2: Generador de Copys</button>
+    <div id="pantalla-clientes">
+        <div class="login-box">
+            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo" style="max-width: 150px;">
+            <h2>Portal de Análisis</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Selecciona o crea un cliente para iniciar sesión y guardar el historial.</p>
+            
+            <select id="select-clientes-existentes">
+                <option value="">-- Seleccionar cliente existente --</option>
+            </select>
+            
+            <p>O ingresa un cliente nuevo:</p>
+            <input type="text" id="input-nuevo-cliente" placeholder="Ej: Neo Consulting, BCP, Interbank...">
+            
+            <button class="action-btn" onclick="iniciarSesion()">Ingresar al Workspace</button>
         </div>
+    </div>
 
-        <div id="analizador" class="tab-content active">
-            
-            <div class="instrucciones-box">
-                <h3>¿Cómo usar el Analizador?</h3>
-                <p>Esta herramienta simula ser un usuario navegando desde tu anuncio hasta tu página web para encontrar fugas de conversión (fricción).</p>
-                <ol>
-                    <li>Selecciona el dispositivo y aplica un filtro visual si deseas evaluar accesibilidad.</li>
-                    <li>Sube una captura de pantalla de tu <strong>Anuncio (Ad)</strong>.</li>
-                    <li>Sube una captura de tu <strong>Página de Destino (Landing Page)</strong>.</li>
-                    <li>Haz clic en Analizar y recibe tu diagnóstico.</li>
-                </ol>
-            </div>
+    <div id="pantalla-app">
+        <div class="container">
+            <header>
+                <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Consulting" class="logo-neo">
+                <h1>Ad Landing Analyzer + Content Creator</h1>
+                <p>Audita fricción y genera copys de alto rendimiento con IA.</p>
+                <div class="cliente-activo-badge">👤 Workspace: <span id="nombre-cliente-activo"></span> <a href="#" onclick="cerrarSesion()" style="color: #ef4444; margin-left:10px; text-decoration:none;">(Cambiar)</a></div>
+            </header>
 
-            <div class="selectors">
-                <label>Dispositivo del usuario:</label>
-                <select id="select-dispositivo"><option>Móvil</option><option>Desktop</option></select>
-                
-                <label style="margin-left: 15px;">Simulador de Accesibilidad:</label>
-                <select id="select-vision" onchange="aplicarFiltroVisual()">
-                    <option value="normal">Sin filtros (Normal)</option>
-                    <option value="vision-daltonismo">Daltonismo (Filtra colores)</option>
-                    <option value="vision-glare">Fatiga Visual (Exceso de luz)</option>
-                </select>
-            </div>
-            
-            <div class="upload-grid">
-                <div class="upload-zone" onclick="document.getElementById('input-ad-1').click()">
-                    <p id="text-ad-1">📸 <strong>Paso 1:</strong> Sube tu AD aquí</p>
-                    <img id="thumb-ad-1" class="thumb-preview">
-                    <input type="file" id="input-ad-1" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-1', 'text-ad-1')">
-                </div>
-                <div class="upload-zone" onclick="document.getElementById('input-landing').click()">
-                    <p id="text-landing">🖥️ <strong>Paso 2:</strong> Sube tu Landing Page aquí</p>
-                    <img id="thumb-landing" class="thumb-preview">
-                    <input type="file" id="input-landing" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-landing', 'text-landing')">
-                </div>
-            </div>
-            
-            <div id="progress-container" style="display:none; margin-bottom: 20px;">
-                <span id="progress-text" style="color: #4a72ff; display:block; margin-bottom:5px;">El motor de IA está procesando las imágenes...</span>
-                <div style="width: 100%; background: #1e293b; border-radius: 10px; height: 10px;">
-                    <div id="progress-bar" style="width: 0%; background: #4a72ff; height: 100%; border-radius: 10px; transition: 0.5s;"></div>
-                </div>
-            </div>
-
-            <button class="action-btn" id="btn-analizar" onclick="analizar()">Analizar Coherencia Completa</button>
-
-            <div id="resultados-analisis" style="display: none; margin-top: 40px;">
-                <div class="score-circle" id="termometro-score">0</div>
-                <h3 style="text-align:center; color: #fff; margin-top: 10px;">Match Score Total</h3>
-                
-                <div class="score-explicacion">
-                    <strong>¿Qué significa este indicador?</strong><br>
-                    Es una calificación calculada por Gemini IA tras evaluar tres pilares: <br>
-                    <strong>1. Continuidad Visual:</strong> ¿Se mantienen los mismos colores y tipografías?<br>
-                    <strong>2. Continuidad Semántica:</strong> ¿El título de la Landing cumple lo que prometió el Anuncio?<br>
-                    <strong>3. Fricción del CTA:</strong> ¿Es fácil encontrar el botón de compra o registro?<br>
-                    <em>(🟢 80-100: Excelente | 🟡 50-79: Fricción Media | 🔴 0-49: Crítico)</em>
+            <div class="app-body">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('analizador')">🔍 Modo 1: Analizador UI/UX</button>
+                    <button class="tab-btn" onclick="switchTab('generador')">✍️ Modo 2: Generador Copys</button>
+                    <button class="tab-btn" onclick="switchTab('historial')">📁 Historial del Cliente</button>
                 </div>
 
-                <div class="md-box" style="margin-top: 25px;"><h3>🎭 Emoción y Tono</h3><p id="res-emocion"></p></div>
-                <div class="md-box"><h3>🔍 Fallos Detectados (Palabras Prometidas no encontradas)</h3><ul id="res-ocr"></ul></div>
-                <div class="md-box"><h3>🧪 Hipótesis A/B Testing sugerida</h3><p id="res-ab"></p></div>
+                <div id="analizador" class="tab-content active">
+                    <div class="selectors">
+                        <label>Dispositivo:</label>
+                        <select id="select-dispositivo"><option>Móvil</option><option>Desktop</option></select>
+                    </div>
+                    
+                    <div class="upload-grid">
+                        <div class="upload-zone" onclick="document.getElementById('input-ad-1').click()">
+                            <p id="text-ad-1">📸 Sube tu AD</p>
+                            <img id="thumb-ad-1" class="thumb-preview">
+                            <input type="file" id="input-ad-1" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-1', 'text-ad-1')">
+                        </div>
+                        <div class="upload-zone" onclick="document.getElementById('input-landing').click()">
+                            <p id="text-landing">🖥️ Sube tu Landing Page</p>
+                            <img id="thumb-landing" class="thumb-preview">
+                            <input type="file" id="input-landing" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-landing', 'text-landing')">
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn" id="btn-analizar" onclick="analizar()">Analizar Coherencia</button>
+                    <p id="progreso-analisis" style="text-align: center; color: #4a72ff; margin-top: 10px; display: none;">Calculando métricas y prioridades con IA...</p>
 
-                <h3 style="margin-top:30px; font-family: 'Playfair Display', serif; color:white;">Matriz de Prioridades de Implementación</h3>
-                <div class="priority-matrix">
-                    <div class="matrix-quadrant" id="q1"><h4>🚀 Quick Wins (Fácil y Alto Impacto)</h4></div>
-                    <div class="matrix-quadrant" id="q2"><h4>🏗️ Proyectos (Difícil pero Alto Impacto)</h4></div>
-                    <div class="matrix-quadrant" id="q3"><h4>🧹 Tareas Menores (Fácil pero Bajo Impacto)</h4></div>
-                    <div class="matrix-quadrant" id="q4"><h4>🧊 Ignorar por ahora</h4></div>
+                    <div id="resultados-analisis" style="display: none; margin-top: 30px;">
+                        
+                        <div class="score-container">
+                            <div style="text-align: center;">
+                                <div class="score-circle" id="termometro-score">0</div>
+                                <span>Match Score</span>
+                            </div>
+                            <div class="sub-metricas">
+                                <div class="metric-bar"><label>Continuidad Visual <span id="val-cv">0%</span></label><div class="bar-bg"><div class="bar-fill" id="bar-cv"></div></div></div>
+                                <div class="metric-bar"><label>Relevancia Semántica <span id="val-rs">0%</span></label><div class="bar-bg"><div class="bar-fill" id="bar-rs"></div></div></div>
+                                <div class="metric-bar"><label>Fricción del CTA <span id="val-fc">0%</span></label><div class="bar-bg"><div class="bar-fill" id="bar-fc"></div></div></div>
+                            </div>
+                        </div>
+
+                        <div class="md-box"><h3>🎭 Emoción</h3><p id="res-emocion"></p></div>
+                        <div class="md-box"><h3>🔍 Fallos OCR</h3><ul id="res-ocr"></ul></div>
+                        
+                        <h3 style="color:#fff;">Matriz de Prioridades</h3>
+                        <div class="priority-matrix" style="margin-bottom: 20px;">
+                            <div class="matrix-quadrant" id="q1"><h4>🚀 Quick Wins</h4></div>
+                            <div class="matrix-quadrant" id="q2"><h4>🏗️ Proyectos</h4></div>
+                            <div class="matrix-quadrant" id="q3"><h4>🧹 Tareas Menores</h4></div>
+                            <div class="matrix-quadrant" id="q4"><h4>🧊 Ignorar</h4></div>
+                        </div>
+
+                        <button class="action-btn btn-secundario" onclick="descargarPDFReporte()">📄 Descargar Reporte en PDF</button>
+                    </div>
+                </div>
+
+                <div id="generador" class="tab-content">
+                    <div class="selectors">
+                        <label>Plataforma:</label>
+                        <select id="select-plataforma"><option>Meta</option><option>Google Ads</option><option>TikTok</option></select>
+                        
+                        <label>Tono:</label>
+                        <select id="select-tono">
+                            <option>Urgencia / FOMO</option><option>Educativo</option>
+                            <option>Corporativo / B2B</option><option>Humorístico</option><option>Inspiracional</option>
+                        </select>
+                        
+                        <label>Variantes:</label>
+                        <select id="select-variantes"><option>1</option><option>2</option><option selected>3</option><option>5</option></select>
+                    </div>
+                    
+                    <div class="upload-grid">
+                        <div class="upload-zone" onclick="document.getElementById('input-ad-2').click()">
+                            <p id="text-ad-2">🎨 Sube el Arte/Diseño de campaña</p>
+                            <img id="thumb-ad-2" class="thumb-preview">
+                            <input type="file" id="input-ad-2" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-2', 'text-ad-2')">
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn" id="btn-generar" onclick="generar()">Crear Copys con IA</button>
+                    
+                    <div id="resultados-copys" style="display: none; margin-top: 20px;">
+                        <h3 style="color:#fff;">Resultados:</h3>
+                        <div style="overflow-x: auto;">
+                            <table id="tabla-copys">
+                                <thead><tr><th>Opción</th><th>Título</th><th>Texto Principal</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <button class="action-btn btn-secundario" onclick="descargarCSV()">📊 Descargar Tabla (CSV / Excel)</button>
+                    </div>
+                </div>
+
+                <div id="historial" class="tab-content">
+                    <h3 style="color:white;">Últimos Análisis (Modo 1)</h3>
+                    <div id="historial-modo1" style="margin-bottom:30px;">No hay datos aún.</div>
+                    
+                    <h3 style="color:white;">Últimos Copys Generados (Modo 2)</h3>
+                    <div id="historial-modo2">No hay datos aún.</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="generador" class="tab-content">
-            
-            <div class="instrucciones-box">
-                <h3>¿Cómo usar el Creador de Contenido?</h3>
-                <p>La IA analizará el arte de tu anuncio y redactará copys altamente persuasivos respetando las reglas estrictas (límite de caracteres y uso de emojis) de la plataforma seleccionada.</p>
-                <ol>
-                    <li>Selecciona dónde correrá la campaña y el tono emocional de la marca.</li>
-                    <li>Sube el diseño gráfico o imagen de tu producto.</li>
-                    <li>Genera variaciones de copy listas para copiar y pegar en tu administrador de anuncios.</li>
-                </ol>
-            </div>
-
-            <div class="selectors">
-                <label>Plataforma Destino:</label>
-                <select id="select-plataforma"><option>Meta</option><option>Google Ads</option></select>
-                
-                <label style="margin-left: 15px;">Tono de Voz:</label>
-                <select id="select-tono"><option>Urgencia / FOMO</option><option>Educativo</option><option>Corporativo</option></select>
-            </div>
-            
-            <div class="upload-grid">
-                <div class="upload-zone" onclick="document.getElementById('input-ad-2').click()">
-                    <p id="text-ad-2">🎨 Sube la imagen/arte de la campaña aquí</p>
-                    <img id="thumb-ad-2" class="thumb-preview">
-                    <input type="file" id="input-ad-2" accept="image/*" style="display:none;" onchange="mostrarMiniatura(this, 'thumb-ad-2', 'text-ad-2')">
-                </div>
-            </div>
-            <button class="action-btn" id="btn-generar" onclick="generar()">Crear Copys Persuasivos</button>
-            <div id="resultados-copys" class="md-box" style="display: none; margin-top: 20px;"></div>
+    <div id="pdf-report">
+        <div class="pdf-header">
+            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Logo">
+            <h2>Reporte de Auditoría Ad/Landing</h2>
+            <p>Cliente: <span id="pdf-cliente"></span> | Fecha: <span id="pdf-fecha"></span></p>
+        </div>
+        <div class="pdf-score-box">Match Score Total: <span id="pdf-score"></span>/100</div>
+        
+        <div class="pdf-section">
+            <h3>1. Sub-métricas de Fricción</h3>
+            <ul>
+                <li>Continuidad Visual: <strong id="pdf-cv"></strong></li>
+                <li>Relevancia Semántica: <strong id="pdf-rs"></strong></li>
+                <li>Fricción del CTA: <strong id="pdf-fc"></strong></li>
+            </ul>
+        </div>
+        <div class="pdf-section">
+            <h3>2. Hallazgos Cualitativos</h3>
+            <p><strong>Emoción:</strong> <span id="pdf-emo"></span></p>
+            <p><strong>Fallos OCR (Palabras Faltantes):</strong> <span id="pdf-ocr"></span></p>
+            <p><strong>Sugerencia A/B Test:</strong> <span id="pdf-ab"></span></p>
+        </div>
+        <div class="pdf-section">
+            <h3>3. Plan de Acción (Priorizado)</h3>
+            <div id="pdf-matriz"></div>
         </div>
     </div>
 
     <script>
+        // Variables Globales
+        let currentClient = "";
+        let dbClientes = JSON.parse(localStorage.getItem('neo_db_clientes')) || {};
+        let ultimosCopysGenerados = [];
+        let ultimoAnalisisGenerado = null;
+
+        // --- SISTEMA DE CLIENTES (LOGIN) ---
+        window.onload = () => {
+            const select = document.getElementById('select-clientes-existentes');
+            Object.keys(dbClientes).forEach(cli => {
+                select.innerHTML += `<option value="${cli}">${cli}</option>`;
+            });
+            
+            // Si ya había alguien logueado
+            const logged = localStorage.getItem('neo_sesion_activa');
+            if(logged && dbClientes[logged]) {
+                document.getElementById('select-clientes-existentes').value = logged;
+                iniciarSesion();
+            }
+        };
+
+        function iniciarSesion() {
+            const select = document.getElementById('select-clientes-existentes').value;
+            const input = document.getElementById('input-nuevo-cliente').value.trim();
+            
+            currentClient = input !== "" ? input : select;
+            if(!currentClient) return alert("Selecciona o escribe un nombre de cliente.");
+
+            // Crear cliente si no existe
+            if(!dbClientes[currentClient]) {
+                dbClientes[currentClient] = { historial_m1: [], historial_m2: [] };
+                localStorage.setItem('neo_db_clientes', JSON.stringify(dbClientes));
+            }
+            
+            localStorage.setItem('neo_sesion_activa', currentClient);
+            document.getElementById('nombre-cliente-activo').innerText = currentClient;
+            
+            document.getElementById('pantalla-clientes').style.display = 'none';
+            document.getElementById('pantalla-app').style.display = 'block';
+            
+            cargarHistorialUI();
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('neo_sesion_activa');
+            location.reload();
+        }
+
+        // --- UI BÁSICA ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
+            if(tabId === 'historial') cargarHistorialUI();
         }
 
         function mostrarMiniatura(input, imgId, textId) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById(imgId);
-                    img.src = e.target.result;
-                    img.style.display = 'block';
+                reader.onload = e => {
+                    document.getElementById(imgId).src = e.target.result;
+                    document.getElementById(imgId).style.display = 'block';
                     document.getElementById(textId).style.display = 'none';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function aplicarFiltroVisual() {
-            const filtro = document.getElementById('select-vision').value;
-            const imagenes = document.querySelectorAll('.thumb-preview');
-            imagenes.forEach(img => {
-                img.className = 'thumb-preview'; 
-                if (filtro !== 'normal') img.classList.add(filtro);
-            });
-        }
-
+        // --- MODO 1: ANALIZADOR ---
         async function analizar() {
             const ad = document.getElementById('input-ad-1').files[0];
             const lp = document.getElementById('input-landing').files[0];
-            if (!ad || !lp) return alert("Por favor, sube la imagen del Anuncio y la Landing Page.");
+            if (!ad || !lp) return alert("Sube ambas imágenes.");
 
-            const btn = document.getElementById('btn-analizar');
-            btn.disabled = true;
-
-            document.getElementById('progress-container').style.display = 'block';
-            let p = 0; 
-            const interval = setInterval(() => { p+=10; if(p<=90) { document.getElementById('progress-bar').style.width = p+'%'; document.getElementById('progress-text').innerText = 'Extrayendo colores, textos y calculando fricción ('+p+'%)...'; } }, 500);
+            document.getElementById('btn-analizar').disabled = true;
+            document.getElementById('progreso-analisis').style.display = 'block';
 
             const formData = new FormData();
             formData.append('ad_image', ad);
@@ -174,37 +255,48 @@
             try {
                 const response = await fetch('/analizar', { method: 'POST', body: formData });
                 const data = await response.json();
-                clearInterval(interval);
-                document.getElementById('progress-bar').style.width = '100%';
-                document.getElementById('progress-text').innerText = '¡Análisis Completado!';
                 
-                localStorage.setItem('neo_last_analysis', JSON.stringify(data.resultado));
+                if(data.status === "error") throw new Error(data.mensaje);
+
+                ultimoAnalisisGenerado = data.resultado;
                 pintarResultadosAnalisis(data.resultado);
-                
+                guardarEnHistorial('m1', data.resultado);
+
             } catch (e) {
-                clearInterval(interval);
-                alert("Error de conexión con el servidor. Revisa tu internet o la consola de Google Cloud.");
+                alert("Error: " + e.message);
             }
-            btn.disabled = false;
+            document.getElementById('btn-analizar').disabled = false;
+            document.getElementById('progreso-analisis').style.display = 'none';
         }
 
         function pintarResultadosAnalisis(data) {
             document.getElementById('resultados-analisis').style.display = 'block';
 
+            // Score Principal
             const term = document.getElementById('termometro-score');
             term.innerText = data.score;
-            let color = data.score >= 80 ? '#27ae60' : (data.score >= 50 ? '#f2c94c' : '#eb5757');
-            term.style.borderColor = color;
-            term.style.color = color;
+            let color = data.score >= 80 ? '#10b981' : (data.score >= 50 ? '#f59e0b' : '#ef4444');
+            term.style.borderColor = color; term.style.color = color;
+
+            // Sub-métricas
+            const sub = data.sub_metricas;
+            document.getElementById('val-cv').innerText = sub.continuidad_visual + '%';
+            document.getElementById('bar-cv').style.width = sub.continuidad_visual + '%';
+            
+            document.getElementById('val-rs').innerText = sub.relevancia_mensaje + '%';
+            document.getElementById('bar-rs').style.width = sub.relevancia_mensaje + '%';
+            
+            document.getElementById('val-fc').innerText = sub.friccion_cta + '%';
+            document.getElementById('bar-fc').style.width = sub.friccion_cta + '%';
 
             document.getElementById('res-emocion').innerText = data.emocion;
-            document.getElementById('res-ab').innerText = data.hipotesis_ab;
-
+            
+            // OCR
             const ocrList = document.getElementById('res-ocr');
-            ocrList.innerHTML = '';
-            if(data.ocr_mismatch.length === 0) ocrList.innerHTML = "<li>✅ Excelente: Todos los textos clave coinciden.</li>";
-            data.ocr_mismatch.forEach(palabra => { ocrList.innerHTML += `<li>❌ Falta o no se destaca: ${palabra}</li>`; });
+            ocrList.innerHTML = data.ocr_mismatch.length === 0 ? "<li>✅ Todo perfecto</li>" : "";
+            data.ocr_mismatch.forEach(p => ocrList.innerHTML += `<li>❌ Falta: ${p}</li>`);
 
+            // Matriz
             ['q1','q2','q3','q4'].forEach(q => document.getElementById(q).innerHTML = document.getElementById(q).firstElementChild.outerHTML);
             data.matriz.forEach(item => {
                 if(document.getElementById(item.cuadrante)) {
@@ -213,36 +305,133 @@
             });
         }
 
+        // REPORTE PDF MODO 1
+        function descargarPDFReporte() {
+            if(!ultimoAnalisisGenerado) return;
+            const data = ultimoAnalisisGenerado;
+
+            // Llenar datos ocultos
+            document.getElementById('pdf-cliente').innerText = currentClient;
+            document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString();
+            document.getElementById('pdf-score').innerText = data.score;
+            document.getElementById('pdf-cv').innerText = data.sub_metricas.continuidad_visual + '%';
+            document.getElementById('pdf-rs').innerText = data.sub_metricas.relevancia_mensaje + '%';
+            document.getElementById('pdf-fc').innerText = data.sub_metricas.friccion_cta + '%';
+            document.getElementById('pdf-emo').innerText = data.emocion;
+            document.getElementById('pdf-ab').innerText = data.hipotesis_ab;
+            document.getElementById('pdf-ocr').innerText = data.ocr_mismatch.length > 0 ? data.ocr_mismatch.join(', ') : "Ninguno, textos coinciden.";
+
+            let matrizHTML = "<ul>";
+            data.matriz.forEach(i => matrizHTML += `<li><strong>${i.cuadrante.toUpperCase()}:</strong> ${i.accion}</li>`);
+            matrizHTML += "</ul>";
+            document.getElementById('pdf-matriz').innerHTML = matrizHTML;
+
+            // Invocar Librería PDF
+            const elemento = document.getElementById('pdf-report');
+            elemento.style.display = 'block'; // Mostrar temp
+
+            html2pdf().from(elemento).set({
+                margin: 0.5,
+                filename: `Reporte_UX_${currentClient}.pdf`,
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).save().then(() => {
+                elemento.style.display = 'none'; // Ocultar
+            });
+        }
+
+        // --- MODO 2: GENERADOR ---
         async function generar() {
             const ad = document.getElementById('input-ad-2').files[0];
-            if (!ad) return alert("Por favor, sube el arte de tu campaña.");
-            document.getElementById('btn-generar').innerText = "Generando con IA (Puede tomar unos segundos)...";
+            if (!ad) return alert("Sube el Arte.");
+            
+            document.getElementById('btn-generar').innerText = "Generando...";
+            document.getElementById('btn-generar').disabled = true;
 
             const f = new FormData();
             f.append('ad_image', ad);
             f.append('plataforma', document.getElementById('select-plataforma').value);
             f.append('tono', document.getElementById('select-tono').value);
+            f.append('num_variantes', document.getElementById('select-variantes').value);
 
             try {
                 const res = await fetch('/generar', { method: 'POST', body: f });
                 const data = await res.json();
                 
-                let texto = data.resultado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                texto = texto.replace(/\n/g, '<br>');
+                if(data.status === "error") throw new Error(data.mensaje);
+
+                ultimosCopysGenerados = data.resultado; // Array de objetos
                 
-                const caja = document.getElementById('resultados-copys');
-                caja.innerHTML = `<h3>Variaciones de Copy Listas:</h3><p>${texto}</p>`;
-                caja.style.display = 'block';
+                // Pintar Tabla
+                const tbody = document.querySelector('#tabla-copys tbody');
+                tbody.innerHTML = '';
+                ultimosCopysGenerados.forEach(copy => {
+                    tbody.innerHTML += `<tr>
+                        <td>#${copy.variante}</td>
+                        <td><strong>${copy.titulo}</strong></td>
+                        <td>${copy.texto}</td>
+                    </tr>`;
+                });
+                
+                document.getElementById('resultados-copys').style.display = 'block';
+                guardarEnHistorial('m2', { plataforma: f.get('plataforma'), copys: ultimosCopysGenerados });
+
             } catch (error) {
-                alert("Error de conexión al generar copys.");
-            } finally {
-                document.getElementById('btn-generar').innerText = "Crear Copys Persuasivos";
-            }
+                alert("Error: " + error.message);
+            } 
+            document.getElementById('btn-generar').innerText = "Crear Copys con IA";
+            document.getElementById('btn-generar').disabled = false;
         }
 
-        function cargarSesion() {
-            const saved = localStorage.getItem('neo_last_analysis');
-            if (saved) { pintarResultadosAnalisis(JSON.parse(saved)); }
+        // DESCARGA CSV (EXCEL)
+        function descargarCSV() {
+            if(ultimosCopysGenerados.length === 0) return;
+            
+            let csv = "Variante,Titulo,Texto Principal\n";
+            ultimosCopysGenerados.forEach(c => {
+                // Escapar comillas para Excel
+                let t = c.titulo.replace(/"/g, '""');
+                let txt = c.texto.replace(/"/g, '""');
+                csv += `${c.variante},"${t}","${txt}"\n`;
+            });
+
+            const blob = new Blob(["\ufeff"+csv], { type: 'text/csv;charset=utf-8;' }); // \ufeff para tildes
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Copys_${currentClient}_${new Date().getTime()}.csv`;
+            link.click();
+        }
+
+        // --- SISTEMA DE HISTORIAL ---
+        function guardarEnHistorial(tipo, datos) {
+            let hist = dbClientes[currentClient][`historial_${tipo}`];
+            hist.unshift({ fecha: new Date().toLocaleString(), datos: datos });
+            if(hist.length > 4) hist.pop(); // Mantener solo últimos 4
+            
+            localStorage.setItem('neo_db_clientes', JSON.stringify(dbClientes));
+        }
+
+        function cargarHistorialUI() {
+            const h1 = dbClientes[currentClient].historial_m1;
+            const h2 = dbClientes[currentClient].historial_m2;
+
+            let html1 = h1.length ? "" : "<p>No hay auditorías guardadas.</p>";
+            h1.forEach(i => {
+                html1 += `<div class="history-card">
+                    <span class="history-date">${i.fecha}</span>
+                    <p style="margin:5px 0;">Match Score: <strong>${i.datos.score}/100</strong></p>
+                </div>`;
+            });
+            document.getElementById('historial-modo1').innerHTML = html1;
+
+            let html2 = h2.length ? "" : "<p>No hay copys guardados.</p>";
+            h2.forEach(i => {
+                html2 += `<div class="history-card">
+                    <span class="history-date">${i.fecha} - ${i.datos.plataforma}</span>
+                    <p style="margin:5px 0;">Se generaron ${i.datos.copys.length} variantes de copy.</p>
+                </div>`;
+            });
+            document.getElementById('historial-modo2').innerHTML = html2;
         }
     </script>
 </body>

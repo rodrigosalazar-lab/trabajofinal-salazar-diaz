@@ -1,56 +1,81 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
 
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-body { background: linear-gradient(135deg, #050b14 0%, #0a1931 100%); color: #e2e8f0; margin: 0; padding: 40px 20px; min-height: 100vh; }
-.container { max-width: 1000px; margin: 0 auto; background-color: #121b2d; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+body { background: linear-gradient(135deg, #050b14 0%, #0a1931 100%); color: #e2e8f0; margin: 0; padding: 0; min-height: 100vh; }
 
-/* Cabecera y Logo */
-header { text-align: center; margin-bottom: 30px; }
-.logo-neo { max-width: 180px; margin-bottom: 15px; }
-header h1 { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 2.5rem; margin-top: 0; margin-bottom: 10px; }
-header p { color: #94a3b8; font-size: 1.1rem; }
+/* Dashboard / Login de Clientes */
+#pantalla-clientes { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+.login-box { background: #121b2d; padding: 40px; border-radius: 16px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+.login-box input, .login-box select { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
 
-/* Cajas de Instrucciones (Onboarding) */
+/* Contenedor Principal App */
+#pantalla-app { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+.container { background-color: #121b2d; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; }
+
+/* Nueva Cabecera Blanca */
+header { background-color: #ffffff; padding: 30px 20px; text-align: center; border-bottom: 4px solid #4a72ff; }
+.logo-neo { max-width: 180px; margin-bottom: 10px; }
+header h1 { font-family: 'Playfair Display', serif; color: #0f172a; font-size: 2.2rem; margin: 0 0 10px 0; }
+header p { color: #475569; font-size: 1.1rem; margin: 0; }
+.cliente-activo-badge { display: inline-block; background: #f1f5f9; color: #334155; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; margin-top: 15px; border: 1px solid #cbd5e1; }
+
+/* Secciones Internas */
+.app-body { padding: 30px; }
 .instrucciones-box { background: rgba(74, 114, 255, 0.1); border-left: 4px solid #4a72ff; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; }
-.instrucciones-box h3 { margin-top: 0; color: #4a72ff; font-size: 1.1rem; margin-bottom: 10px; }
-.instrucciones-box p { margin: 0 0 10px 0; font-size: 0.95rem; line-height: 1.5; color: #cbd5e1; }
-.instrucciones-box ol { margin: 0; padding-left: 20px; color: #e2e8f0; font-size: 0.95rem; }
-.instrucciones-box li { margin-bottom: 5px; }
+.instrucciones-box h3 { margin-top: 0; color: #4a72ff; }
 
-/* Pestañas */
-.tabs { display: flex; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; justify-content: center; }
-.tab-btn { padding: 12px 24px; background: #1e293b; border: none; color: #94a3b8; cursor: pointer; border-radius: 30px; transition: 0.3s; font-weight: 500;}
+.tabs { display: flex; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 20px; background: #1e293b; border: none; color: #94a3b8; cursor: pointer; border-radius: 30px; transition: 0.3s; font-weight: 500;}
 .tab-btn.active { background: #4a72ff; color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: fadeIn 0.5s; }
+.tab-content { display: none; animation: fadeIn 0.5s; }
+.tab-content.active { display: block; }
 
-/* Controles y Zonas de Subida */
+/* Controles */
 .selectors { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; flex-wrap: wrap; background: #1e293b; padding: 15px; border-radius: 8px;}
-select { padding: 10px 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; outline: none; }
-.action-btn { width: 100%; padding: 16px; background: transparent; border: 2px solid #4a72ff; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; color: #fff; margin-top: 10px;}
-.action-btn:hover { background: #4a72ff; }
+select, input[type="number"] { padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; outline: none; }
+.action-btn { width: 100%; padding: 16px; background: #4a72ff; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; color: #fff; margin-top: 10px;}
+.action-btn:hover { background: #3b5bdb; }
+.btn-secundario { background: #10b981; margin-top: 15px;}
+.btn-secundario:hover { background: #059669; }
 
+/* Zonas de subida */
 .upload-grid { display: flex; gap: 20px; margin-bottom: 20px; }
-.upload-zone { flex: 1; border: 2px dashed #334155; border-radius: 12px; text-align: center; padding: 20px; background: rgba(15,23,42,0.5); cursor: pointer; position: relative; overflow: hidden; transition: 0.3s; }
+.upload-zone { flex: 1; border: 2px dashed #334155; border-radius: 12px; text-align: center; padding: 20px; cursor: pointer; transition: 0.3s; }
 .upload-zone:hover { border-color: #4a72ff; background: rgba(74, 114, 255, 0.05); }
-.thumb-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; transition: filter 0.3s;}
+.thumb-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; }
 
-/* Simulador de Visión */
-.vision-daltonismo { filter: grayscale(100%) contrast(120%); }
-.vision-glare { filter: brightness(1.5) contrast(0.8) blur(1px); }
+/* Resultados Modo 1 */
+.score-container { display: flex; align-items: center; justify-content: space-around; background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 20px;}
+.score-circle { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; border: 5px solid #334155; }
+.sub-metricas { flex: 1; min-width: 250px; }
+.metric-bar { margin-bottom: 10px; }
+.metric-bar label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; color: #cbd5e1;}
+.bar-bg { width: 100%; height: 8px; background: #0f172a; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: #4a72ff; transition: width 1s; }
 
-/* Termómetro Score y Explicación */
-.score-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; margin: 0 auto 10px; border: 6px solid #334155; transition: border-color 0.5s, color 0.5s; }
-.score-explicacion { font-size: 0.85rem; color: #94a3b8; text-align: center; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; line-height: 1.5; border: 1px solid #1e293b; }
-
-/* Matriz de Prioridad */
-.priority-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-.matrix-quadrant { background: #1e293b; padding: 15px; border-radius: 8px; min-height: 120px;}
-.matrix-quadrant h4 { margin: 0 0 10px 0; color: #4a72ff; border-bottom: 1px solid #334155; padding-bottom: 5px;}
-.action-item { background: #0f172a; padding: 8px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid #4a72ff; font-size: 0.9rem;}
-
-/* Panel Markdown */
 .md-box { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-.md-box h3 { margin-top: 0; color: #4a72ff; font-family: 'Playfair Display', serif;}
+.md-box h3 { margin-top: 0; color: #4a72ff; }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.priority-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.matrix-quadrant { background: #0f172a; padding: 15px; border-radius: 8px; }
+.matrix-quadrant h4 { margin: 0 0 10px 0; color: #4a72ff; border-bottom: 1px solid #1e293b; padding-bottom: 5px;}
+.action-item { background: #1e293b; padding: 8px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid #4a72ff; font-size: 0.9rem;}
+
+/* Tablas */
+table { width: 100%; border-collapse: collapse; margin-top: 15px; color: #fff; background: #1e293b; border-radius: 8px; overflow: hidden; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+th { background: #0f172a; color: #4a72ff; }
+
+/* Historial UI */
+.history-card { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #10b981; }
+.history-date { font-size: 0.8rem; color: #94a3b8; }
+
+/* REPORTE PDF (Oculto en web, estilo A4 Blanco) */
+#pdf-report { display: none; background: white; color: black; padding: 40px; width: 800px; font-family: 'Inter', sans-serif; }
+#pdf-report .pdf-header { text-align: center; border-bottom: 2px solid #4a72ff; padding-bottom: 20px; margin-bottom: 20px; }
+#pdf-report .pdf-header img { max-width: 150px; }
+#pdf-report .pdf-score-box { border: 1px solid #ccc; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; background: #f8fafc; border-radius: 8px; margin-bottom: 20px;}
+#pdf-report .pdf-section { margin-bottom: 20px; }
+#pdf-report .pdf-section h3 { color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
