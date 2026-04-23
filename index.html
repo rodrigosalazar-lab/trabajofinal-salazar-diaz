@@ -10,15 +10,15 @@
 
     <div id="pantalla-clientes">
         <div class="login-box">
-            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo" style="max-width: 150px;">
-            <h2>Portal de Análisis</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Selecciona o crea un cliente para iniciar sesión y guardar el historial.</p>
+            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Logo" class="login-logo">
+            <h2>Portal de Análisis Growth</h2>
+            <p class="login-subtitle">Selecciona o crea un espacio de trabajo para guardar tu historial de auditorías.</p>
             
             <select id="select-clientes-existentes">
                 <option value="">-- Seleccionar cliente existente --</option>
             </select>
             
-            <p>O ingresa un cliente nuevo:</p>
+            <p class="login-divider">O ingresa un cliente nuevo:</p>
             <input type="text" id="input-nuevo-cliente" placeholder="Ej: Neo Consulting, BCP, Interbank...">
             
             <button class="action-btn" onclick="iniciarSesion()">Ingresar al Workspace</button>
@@ -30,7 +30,7 @@
             <header>
                 <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Consulting" class="logo-neo">
                 <h1>Ad Landing Analyzer + Content Creator</h1>
-                <p>Audita fricción y genera copys de alto rendimiento con IA.</p>
+                <p>Audita la fricción de tus embudos publicitarios y genera copys de alto rendimiento con IA.</p>
                 <div class="cliente-activo-badge">👤 Workspace: <span id="nombre-cliente-activo"></span> <a href="#" onclick="cerrarSesion()" style="color: #ef4444; margin-left:10px; text-decoration:none;">(Cambiar)</a></div>
             </header>
 
@@ -42,6 +42,18 @@
                 </div>
 
                 <div id="analizador" class="tab-content active">
+                    
+                    <div class="instrucciones-box">
+                        <h3>¿Cómo usar el Analizador?</h3>
+                        <p>Simula ser un usuario navegando desde tu anuncio hasta tu página web para encontrar fugas de conversión.</p>
+                        <ol>
+                            <li>Selecciona el dispositivo del usuario.</li>
+                            <li>Sube una captura de pantalla de tu <strong>Anuncio (Ad)</strong>.</li>
+                            <li>Sube una captura de tu <strong>Página de Destino (Landing Page)</strong>.</li>
+                            <li>Haz clic en Analizar y recibe tu diagnóstico.</li>
+                        </ol>
+                    </div>
+
                     <div class="selectors">
                         <label>Dispositivo:</label>
                         <select id="select-dispositivo"><option>Móvil</option><option>Desktop</option></select>
@@ -77,7 +89,16 @@
                             </div>
                         </div>
 
-                        <div class="md-box"><h3>🎭 Emoción</h3><p id="res-emocion"></p></div>
+                        <div class="score-explicacion">
+                            <strong>¿Qué significa este indicador?</strong><br>
+                            Es una calificación calculada por Gemini IA tras evaluar tres pilares: <br>
+                            <strong>1. Continuidad Visual:</strong> ¿Se mantienen los mismos colores y tipografías?<br>
+                            <strong>2. Continuidad Semántica:</strong> ¿El título de la Landing cumple lo que prometió el Anuncio?<br>
+                            <strong>3. Fricción del CTA:</strong> ¿Es fácil encontrar el botón de compra o registro?<br>
+                            <em>(🟢 80-100: Excelente | 🟡 50-79: Fricción Media | 🔴 0-49: Crítico)</em>
+                        </div>
+
+                        <div class="md-box" style="margin-top: 25px;"><h3>🎭 Emoción</h3><p id="res-emocion"></p></div>
                         <div class="md-box"><h3>🔍 Fallos OCR</h3><ul id="res-ocr"></ul></div>
                         
                         <h3 style="color:#fff;">Matriz de Prioridades</h3>
@@ -93,6 +114,17 @@
                 </div>
 
                 <div id="generador" class="tab-content">
+                    
+                    <div class="instrucciones-box">
+                        <h3>¿Cómo usar el Creador de Contenido?</h3>
+                        <p>La IA analizará el arte de tu anuncio y redactará copys persuasivos respetando las reglas de la plataforma.</p>
+                        <ol>
+                            <li>Selecciona la plataforma, el tono y cuántas variantes necesitas.</li>
+                            <li>Sube el diseño gráfico de tu producto.</li>
+                            <li>Genera variaciones de copy y descárgalas en tabla.</li>
+                        </ol>
+                    </div>
+
                     <div class="selectors">
                         <label>Plataforma:</label>
                         <select id="select-plataforma"><option>Meta</option><option>Google Ads</option><option>TikTok</option></select>
@@ -140,49 +172,49 @@
         </div>
     </div>
 
-    <div id="pdf-report">
-        <div class="pdf-header">
-            <img src="https://neoconsulting.ai/neo-logo-25.png" alt="Neo Logo">
-            <h2>Reporte de Auditoría Ad/Landing</h2>
-            <p>Cliente: <span id="pdf-cliente"></span> | Fecha: <span id="pdf-fecha"></span></p>
-        </div>
-        <div class="pdf-score-box">Match Score Total: <span id="pdf-score"></span>/100</div>
-        
-        <div class="pdf-section">
-            <h3>1. Sub-métricas de Fricción</h3>
-            <ul>
-                <li>Continuidad Visual: <strong id="pdf-cv"></strong></li>
-                <li>Relevancia Semántica: <strong id="pdf-rs"></strong></li>
-                <li>Fricción del CTA: <strong id="pdf-fc"></strong></li>
-            </ul>
-        </div>
-        <div class="pdf-section">
-            <h3>2. Hallazgos Cualitativos</h3>
-            <p><strong>Emoción:</strong> <span id="pdf-emo"></span></p>
-            <p><strong>Fallos OCR (Palabras Faltantes):</strong> <span id="pdf-ocr"></span></p>
-            <p><strong>Sugerencia A/B Test:</strong> <span id="pdf-ab"></span></p>
-        </div>
-        <div class="pdf-section">
-            <h3>3. Plan de Acción (Priorizado)</h3>
-            <div id="pdf-matriz"></div>
+    <div id="pdf-report-container">
+        <div id="pdf-report">
+            <div class="pdf-header">
+                <img src="https://neoconsulting.ai/neo-logo-25.png" crossorigin="anonymous" alt="Neo Logo">
+                <h2>Reporte de Auditoría Ad/Landing</h2>
+                <p>Cliente: <strong id="pdf-cliente"></strong> | Fecha: <strong id="pdf-fecha"></strong></p>
+            </div>
+            
+            <div class="pdf-score-box">Match Score Total: <span id="pdf-score"></span>/100</div>
+            
+            <div class="pdf-section">
+                <h3>1. Sub-métricas de Fricción</h3>
+                <ul>
+                    <li>Continuidad Visual: <strong id="pdf-cv"></strong></li>
+                    <li>Relevancia Semántica: <strong id="pdf-rs"></strong></li>
+                    <li>Fricción del CTA: <strong id="pdf-fc"></strong></li>
+                </ul>
+            </div>
+            <div class="pdf-section">
+                <h3>2. Hallazgos Cualitativos</h3>
+                <p><strong>Emoción:</strong> <span id="pdf-emo"></span></p>
+                <p><strong>Fallos OCR (Palabras Faltantes):</strong> <span id="pdf-ocr"></span></p>
+                <p><strong>Sugerencia A/B Test:</strong> <span id="pdf-ab"></span></p>
+            </div>
+            <div class="pdf-section">
+                <h3>3. Plan de Acción (Priorizado)</h3>
+                <div id="pdf-matriz"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Variables Globales
         let currentClient = "";
         let dbClientes = JSON.parse(localStorage.getItem('neo_db_clientes')) || {};
         let ultimosCopysGenerados = [];
         let ultimoAnalisisGenerado = null;
 
-        // --- SISTEMA DE CLIENTES (LOGIN) ---
         window.onload = () => {
             const select = document.getElementById('select-clientes-existentes');
             Object.keys(dbClientes).forEach(cli => {
                 select.innerHTML += `<option value="${cli}">${cli}</option>`;
             });
             
-            // Si ya había alguien logueado
             const logged = localStorage.getItem('neo_sesion_activa');
             if(logged && dbClientes[logged]) {
                 document.getElementById('select-clientes-existentes').value = logged;
@@ -197,7 +229,6 @@
             currentClient = input !== "" ? input : select;
             if(!currentClient) return alert("Selecciona o escribe un nombre de cliente.");
 
-            // Crear cliente si no existe
             if(!dbClientes[currentClient]) {
                 dbClientes[currentClient] = { historial_m1: [], historial_m2: [] };
                 localStorage.setItem('neo_db_clientes', JSON.stringify(dbClientes));
@@ -217,7 +248,6 @@
             location.reload();
         }
 
-        // --- UI BÁSICA ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -238,7 +268,6 @@
             }
         }
 
-        // --- MODO 1: ANALIZADOR ---
         async function analizar() {
             const ad = document.getElementById('input-ad-1').files[0];
             const lp = document.getElementById('input-landing').files[0];
@@ -272,31 +301,25 @@
         function pintarResultadosAnalisis(data) {
             document.getElementById('resultados-analisis').style.display = 'block';
 
-            // Score Principal
             const term = document.getElementById('termometro-score');
             term.innerText = data.score;
             let color = data.score >= 80 ? '#10b981' : (data.score >= 50 ? '#f59e0b' : '#ef4444');
             term.style.borderColor = color; term.style.color = color;
 
-            // Sub-métricas
             const sub = data.sub_metricas;
             document.getElementById('val-cv').innerText = sub.continuidad_visual + '%';
             document.getElementById('bar-cv').style.width = sub.continuidad_visual + '%';
-            
             document.getElementById('val-rs').innerText = sub.relevancia_mensaje + '%';
             document.getElementById('bar-rs').style.width = sub.relevancia_mensaje + '%';
-            
             document.getElementById('val-fc').innerText = sub.friccion_cta + '%';
             document.getElementById('bar-fc').style.width = sub.friccion_cta + '%';
 
             document.getElementById('res-emocion').innerText = data.emocion;
             
-            // OCR
             const ocrList = document.getElementById('res-ocr');
             ocrList.innerHTML = data.ocr_mismatch.length === 0 ? "<li>✅ Todo perfecto</li>" : "";
             data.ocr_mismatch.forEach(p => ocrList.innerHTML += `<li>❌ Falta: ${p}</li>`);
 
-            // Matriz
             ['q1','q2','q3','q4'].forEach(q => document.getElementById(q).innerHTML = document.getElementById(q).firstElementChild.outerHTML);
             data.matriz.forEach(item => {
                 if(document.getElementById(item.cuadrante)) {
@@ -305,12 +328,11 @@
             });
         }
 
-        // REPORTE PDF MODO 1
+        // LÓGICA CORREGIDA DEL PDF
         function descargarPDFReporte() {
             if(!ultimoAnalisisGenerado) return;
             const data = ultimoAnalisisGenerado;
 
-            // Llenar datos ocultos
             document.getElementById('pdf-cliente').innerText = currentClient;
             document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString();
             document.getElementById('pdf-score').innerText = data.score;
@@ -326,21 +348,24 @@
             matrizHTML += "</ul>";
             document.getElementById('pdf-matriz').innerHTML = matrizHTML;
 
-            // Invocar Librería PDF
+            // Mostrar el contenedor fuera de pantalla para que html2pdf pueda leerlo
+            const contenedorPDF = document.getElementById('pdf-report-container');
+            contenedorPDF.classList.add('generando'); 
+
             const elemento = document.getElementById('pdf-report');
-            elemento.style.display = 'block'; // Mostrar temp
 
             html2pdf().from(elemento).set({
                 margin: 0.5,
                 filename: `Reporte_UX_${currentClient}.pdf`,
-                html2canvas: { scale: 2 },
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true }, // useCORS arregla el problema del logo en blanco
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             }).save().then(() => {
-                elemento.style.display = 'none'; // Ocultar
+                // Volver a ocultar el contenedor
+                contenedorPDF.classList.remove('generando');
             });
         }
 
-        // --- MODO 2: GENERADOR ---
         async function generar() {
             const ad = document.getElementById('input-ad-2').files[0];
             if (!ad) return alert("Sube el Arte.");
@@ -360,9 +385,8 @@
                 
                 if(data.status === "error") throw new Error(data.mensaje);
 
-                ultimosCopysGenerados = data.resultado; // Array de objetos
+                ultimosCopysGenerados = data.resultado; 
                 
-                // Pintar Tabla
                 const tbody = document.querySelector('#tabla-copys tbody');
                 tbody.innerHTML = '';
                 ultimosCopysGenerados.forEach(copy => {
@@ -383,31 +407,25 @@
             document.getElementById('btn-generar').disabled = false;
         }
 
-        // DESCARGA CSV (EXCEL)
         function descargarCSV() {
             if(ultimosCopysGenerados.length === 0) return;
-            
             let csv = "Variante,Titulo,Texto Principal\n";
             ultimosCopysGenerados.forEach(c => {
-                // Escapar comillas para Excel
                 let t = c.titulo.replace(/"/g, '""');
                 let txt = c.texto.replace(/"/g, '""');
                 csv += `${c.variante},"${t}","${txt}"\n`;
             });
-
-            const blob = new Blob(["\ufeff"+csv], { type: 'text/csv;charset=utf-8;' }); // \ufeff para tildes
+            const blob = new Blob(["\ufeff"+csv], { type: 'text/csv;charset=utf-8;' }); 
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             link.download = `Copys_${currentClient}_${new Date().getTime()}.csv`;
             link.click();
         }
 
-        // --- SISTEMA DE HISTORIAL ---
         function guardarEnHistorial(tipo, datos) {
             let hist = dbClientes[currentClient][`historial_${tipo}`];
             hist.unshift({ fecha: new Date().toLocaleString(), datos: datos });
-            if(hist.length > 4) hist.pop(); // Mantener solo últimos 4
-            
+            if(hist.length > 4) hist.pop(); 
             localStorage.setItem('neo_db_clientes', JSON.stringify(dbClientes));
         }
 
